@@ -3,6 +3,7 @@ package com.mycompany.smarteduapi.database;
 import com.mycompany.smarteduapi.model.Room;
 import java.util.*;
 import com.mycompany.smarteduapi.model.Sensor;
+import com.mycompany.smarteduapi.model.SensorReading;
 
 public class DataStore {
     
@@ -14,5 +15,6 @@ public class DataStore {
     }
     
     public static Map<String, Sensor> sensors = new HashMap<>();
+    public static Map<String, List<SensorReading>> readings = new HashMap<>();
     
 }
