@@ -56,6 +56,18 @@ public class RoomResource {
                     .entity(Map.of("error", "Room not found"))
                     .build();
         }
+        
+        // ❗ Business rule
+        if (!room.getSensorIds().isEmpty()) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(Map.of("error", "Room has sensors, cannot delete"))
+                    .build();
+        }
+
+        DataStore.rooms.remove(id);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
 
     
     
