@@ -5,13 +5,14 @@ import java.util.*;
 import sun.management.Sensor;
 
 public class DataStore {
-
-    // Store all rooms
+    
     public static Map<String, Room> rooms = new HashMap<>();
 
-    // Store all sensors (for Part 3)
+    static {
+        rooms.put("R1", new Room("R1", "Staff Room", 50));
+        rooms.put("R2", new Room("R2", "Computer Lab", 30));
+    }
+    
     public static Map<String, Sensor> sensors = new HashMap<>();
-
-    // Store sensor readings (for Part 4)
-    public static Map<String, List<SensorReading>> readings = new HashMap<>();
+    
 }
