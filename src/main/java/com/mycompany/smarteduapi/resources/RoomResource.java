@@ -44,6 +44,23 @@ public class RoomResource {
         return Response.ok(room).build();
     }
     
+    // ✅ DELETE room (IMPROVED)
+    @DELETE
+    @Path("/{roomId}")
+    public Response deleteRoom(@PathParam("roomId") String id) {
+
+        Room room = DataStore.rooms.get(id);
+
+        if (room == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "Room not found"))
+                    .build();
+        }
+
+    
+    
+    
+    
   
 
 }
