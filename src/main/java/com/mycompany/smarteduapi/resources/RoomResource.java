@@ -12,10 +12,20 @@ import java.util.*;
 @Consumes(MediaType.APPLICATION_JSON)
 public class RoomResource {
 
-    // ✅ GET all rooms
+    
     @GET
     public Collection<Room> getAllRooms() {
         return DataStore.rooms.values();
+    }
+    
+    @POST
+    public Response addRoom(Room room) {
+
+        DataStore.rooms.put(room.getId(), room);
+
+        return Response.status(Response.Status.CREATED)
+                .entity(room)
+                .build();
     }
 
 
