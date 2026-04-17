@@ -27,6 +27,23 @@ public class RoomResource {
                 .entity(room)
                 .build();
     }
+    
+     // ✅ GET single room (FIXED)
+    @GET
+    @Path("/{roomId}")
+    public Response getRoom(@PathParam("roomId") String id) {
 
+        Room room = DataStore.rooms.get(id);
+
+        if (room == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "Room not found"))
+                    .build();
+        }
+
+        return Response.ok(room).build();
+    }
+    
+  
 
 }
