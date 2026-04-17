@@ -31,5 +31,22 @@ public class SensorResource {
                 .filter(sensor -> sensor.getType().equalsIgnoreCase(type))
                 .collect(Collectors.toList());
     }
+    
+    
+     // POST sensor
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addSensor(Sensor sensor) {
+
+        // ✅ VALIDATION (VERY IMPORTANT)
+        Room room = DataStore.rooms.get(sensor.getRoomId());
+
+        if (room == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Room does not exist")
+                    .build();
+        }
+        
 
 }
