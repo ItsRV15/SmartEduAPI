@@ -1,25 +1,31 @@
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.util.*;
+package com.mycompany.smarteduapi.resources;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/")
 public class DiscoveryResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getApiInfo() {
+    public Map<String, Object> getApiInfo() {
 
         Map<String, Object> response = new HashMap<>();
 
+        response.put("name", "SmartCampusAPI");
         response.put("version", "v1");
-        response.put("contact", "your_email@westminster.ac.uk");
+        response.put("contact", "admin@university.com");
 
-        Map<String, String> resources = new HashMap<>();
-        resources.put("rooms", "/api/v1/rooms");
-        resources.put("sensors", "/api/v1/sensors");
+        Map<String, String> links = new HashMap<>();
+        links.put("rooms", "/api/v1/rooms");
+        links.put("sensors", "/api/v1/sensors");
 
-        response.put("resources", resources);
+        response.put("links", links);
 
-        return Response.ok(response).build();
+        return response;
     }
 }

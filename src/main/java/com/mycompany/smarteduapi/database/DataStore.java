@@ -2,7 +2,7 @@ package com.mycompany.smarteduapi.database;
 
 import com.mycompany.smarteduapi.model.Room;
 import java.util.*;
-import sun.management.Sensor;
+import com.mycompany.smarteduapi.model.Sensor;
 
 public class DataStore {
     
