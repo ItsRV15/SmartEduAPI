@@ -41,4 +41,17 @@ public class SensorReadingResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         
+         // Add reading
+        DataStore.readings
+                .computeIfAbsent(sensorId, k -> new ArrayList<>())
+                .add(reading);
+
+        // ⚠️ VERY IMPORTANT (spec requirement)
+        sensor.setCurrentValue(reading.getValue());
+
+        return Response.status(Response.Status.CREATED)
+                .entity(reading)
+                .build();
+    }
 }
+        
