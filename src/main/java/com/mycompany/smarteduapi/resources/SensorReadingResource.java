@@ -12,8 +12,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
+@Path("/")   // 🔥 REQUIRED
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class SensorReadingResource {
 
     private String sensorId;
@@ -22,31 +26,26 @@ public class SensorReadingResource {
         this.sensorId = sensorId;
     }
 
-    // GET readings
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public List<SensorReading> getReadings() {
         return DataStore.readings.getOrDefault(sensorId, new ArrayList<>());
     }
-    
-     // POST reading
+
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response addReading(SensorReading reading) {
 
         Sensor sensor = DataStore.sensors.get(sensorId);
 
         if (sensor == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "Sensor not found"))
+                    .build();
         }
-        
-         // Add reading
+
         DataStore.readings
                 .computeIfAbsent(sensorId, k -> new ArrayList<>())
                 .add(reading);
 
-        // ⚠️ VERY IMPORTANT (spec requirement)
         sensor.setCurrentValue(reading.getValue());
 
         return Response.status(Response.Status.CREATED)
@@ -54,4 +53,3 @@ public class SensorReadingResource {
                 .build();
     }
 }
-        
