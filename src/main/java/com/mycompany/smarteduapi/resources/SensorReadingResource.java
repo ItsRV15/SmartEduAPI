@@ -4,6 +4,7 @@
  */
 package com.mycompany.smarteduapi.resources;
 import com.mycompany.smarteduapi.database.DataStore;
+import com.mycompany.smarteduapi.exception.SensorUnavailableException;
 import com.mycompany.smarteduapi.model.Sensor;
 import com.mycompany.smarteduapi.model.SensorReading;
 
@@ -41,6 +42,10 @@ public class SensorReadingResource {
                     .entity(Map.of("error", "Sensor not found"))
                     .build();
         }
+        
+        if ("MAINTENANCE".equalsIgnoreCase(sensor.getStatus())) {
+            throw new SensorUnavailableException("Sensor is under maintenance");
+           }
 
         DataStore.readings
                 .computeIfAbsent(sensorId, k -> new ArrayList<>())
@@ -51,5 +56,6 @@ public class SensorReadingResource {
         return Response.status(Response.Status.CREATED)
                 .entity(reading)
                 .build();
+        
     }
 }
