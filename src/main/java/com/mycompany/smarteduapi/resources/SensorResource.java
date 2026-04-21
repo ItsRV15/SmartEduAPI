@@ -6,6 +6,7 @@ package com.mycompany.smarteduapi.resources;
 
 
 import com.mycompany.smarteduapi.database.DataStore;
+import com.mycompany.smarteduapi.exception.LinkedResourceNotFoundException;
 import com.mycompany.smarteduapi.model.Sensor;
 import com.mycompany.smarteduapi.model.Room;
 
@@ -43,10 +44,8 @@ public class SensorResource {
         Room room = DataStore.rooms.get(sensor.getRoomId());
 
         if (room == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Room does not exist")
-                    .build();
-        }
+            throw new LinkedResourceNotFoundException("Room does not exist");
+          }
         
         // Save sensor
         DataStore.sensors.put(sensor.getId(), sensor);
