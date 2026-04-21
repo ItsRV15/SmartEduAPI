@@ -16,7 +16,7 @@ public class DiscoveryResource {
 
         Map<String, Object> response = new HashMap<>();
 
-        response.put("name", "SmartCampusAPI");
+        response.put("name", "SmartEduAPI");
         response.put("version", "v1");
         response.put("contact", "admin@university.com");
 
