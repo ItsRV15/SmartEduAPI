@@ -1,6 +1,7 @@
 package com.mycompany.smarteduapi.resources;
 
 import com.mycompany.smarteduapi.database.DataStore;
+import com.mycompany.smarteduapi.exception.RoomNotEmptyException;
 import com.mycompany.smarteduapi.model.Room;
 
 import javax.ws.rs.*;
@@ -57,11 +58,8 @@ public class RoomResource {
                     .build();
         }
         
-        // ❗ Business rule
         if (!room.getSensorIds().isEmpty()) {
-            return Response.status(Response.Status.CONFLICT)
-                    .entity(Map.of("error", "Room has sensors, cannot delete"))
-                    .build();
+            throw new RoomNotEmptyException("Room has sensors assigned");
         }
 
         DataStore.rooms.remove(id);
