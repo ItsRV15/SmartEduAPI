@@ -13,49 +13,53 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
-@Path("/")   // 🔥 REQUIRED
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+
+
 public class SensorReadingResource {
-
-    private String sensorId;
-
-    public SensorReadingResource(String sensorId) {
+    private String sensorId; 
+    
+    public SensorReadingResource(String sensorId){
         this.sensorId = sensorId;
+        
     }
-
+    
+    //GET sensor readings 
+    
     @GET
-    public List<SensorReading> getReadings() {
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<SensorReading> getReadings(){ 
         return DataStore.readings.getOrDefault(sensorId, new ArrayList<>());
     }
-
-    @POST
-    public Response addReading(SensorReading reading) {
-
+    
+    //POST to add a new sensor reading 
+    @POST 
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    
+    public Response addReading(SensorReading reading){ 
         Sensor sensor = DataStore.sensors.get(sensorId);
-
-        if (sensor == null) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "Sensor not found"))
-                    .build();
+        
+        if (sensor == null){ 
+            return Response.status(Response.Status.NOT_FOUND).build(); 
+            
         }
         
-        if ("MAINTENANCE".equalsIgnoreCase(sensor.getStatus())) {
-            throw new SensorUnavailableException("Sensor is under maintenance");
-           }
-
-        DataStore.readings
-                .computeIfAbsent(sensorId, k -> new ArrayList<>())
-                .add(reading);
-
-        sensor.setCurrentValue(reading.getValue());
-
-        return Response.status(Response.Status.CREATED)
-                .entity(reading)
-                .build();
+        if (sensor.getStatus().equalsIgnoreCase("MAINTENANCE")) {
+                throw new SensorUnavailableException("Sensor is under maintenance and cannot accept readings");
+          }
         
+        // Add the reading 
+        
+        DataStore.readings.computeIfAbsent(sensorId, k-> new ArrayList<>())
+                .add(reading); 
+        
+        sensor.setCurrentValue(reading.getValue()); 
+        
+        return Response.status(Response.Status.CREATED).entity(reading)
+                .build(); 
     }
+    
+    
 }
