@@ -17,3 +17,17 @@ The system is designed to simulate a real-world campus infrastructure where sens
 
 
 
+ API Design
+ 
+ Resources
+ 
+Resource	             Description
+
+Rooms	          Represents physical locations in the campus
+Sensors	        Devices assigned to rooms
+Sensor          Readings	Historical data collected from sensors
+
+
+
+
+
