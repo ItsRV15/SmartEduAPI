@@ -57,5 +57,58 @@ GET /api/v1/rooms/{id}
 DELETE /api/v1/rooms/{id}
 
 
+### Sensors
+GET /api/v1/sensors
+GET /api/v1/sensors?type=Temperature
+POST /api/v1/sensors
+
+
+### Sensor Readings
+GET /api/v1/sensors/{sensorId}/readings
+POST /api/v1/sensors/{sensorId}/readings
+
+
+## CURL Commands
+### 1. Get API Info
+curl -X GET http://localhost:8080/SmartCampusAPI/api/v1
+
+### 2. Create Room
+curl -X POST http://localhost:8080/SmartCampusAPI/api/v1/rooms
+-H "Content-Type: application/json"
+-d '{"id":"R1","name":"Computer Lab","capacity":40}'
+
+
+### 3. Get All Rooms
+curl -X GET http://localhost:8080/SmartCampusAPI/api/v1/rooms
+
+
+### 4. Create Sensor
+curl -X POST http://localhost:8080/SmartCampusAPI/api/v1/sensors
+-H "Content-Type: application/json"
+-d '{"id":"TEMP-001","type":"Temperature","status":"ACTIVE","currentValue":25,"roomId":"R1"}'
+
+
+### 5. Add Sensor Reading
+curl -X POST http://localhost:8080/SmartCampusAPI/api/v1/sensors/TEMP-001/readings
+-H "Content-Type: application/json"
+-d '{"id":"READ-001","timestamp":1710000000,"value":26.5}'
+
+
+##  Error Handling
+- 409 Conflict → Room has sensors
+- 422 Unprocessable Entity → Invalid room reference
+- 403 Forbidden → Sensor under maintenance
+- 500 Internal Server Error → Unexpected errors
+All errors return JSON responses.
+
+
+## Logging
+A JAX-RS filter logs:
+- Request method and URI
+- Response status code
+
+
+
+
 
 
