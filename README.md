@@ -94,18 +94,33 @@ curl -X POST http://localhost:8080/SmartCampusAPI/api/v1/sensors/TEMP-001/readin
 -d '{"id":"READ-001","timestamp":1710000000,"value":26.5}'
 
 
-##  Error Handling
-- 409 Conflict → Room has sensors
-- 422 Unprocessable Entity → Invalid room reference
-- 403 Forbidden → Sensor under maintenance
-- 500 Internal Server Error → Unexpected errors
-All errors return JSON responses.
+## Error Handling Strategy
 
+The API implements robust error handling using custom exceptions and ExceptionMappers:
 
-## Logging
-A JAX-RS filter logs:
-- Request method and URI
-- Response status code
+| Scenario | Status Code | Explanation |
+|--------|--------|------------|
+| Room has sensors | 409 Conflict | Prevents data inconsistency |
+| Invalid roomId | 422 Unprocessable Entity | Valid request but invalid reference |
+| Sensor in maintenance | 403 Forbidden | State-based restriction |
+| Unexpected error | 500 Internal Server Error | Global safety net |
+
+All errors return structured JSON responses.
+
+---
+
+## Logging (Observability)
+
+A logging filter is implemented using:
+- `ContainerRequestFilter`
+- `ContainerResponseFilter`
+
+Logs include:
+- Incoming HTTP method and URI
+- Outgoing response status
+
+This improves debugging, monitoring, and system observability.
+
 
 
 
