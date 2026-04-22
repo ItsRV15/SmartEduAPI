@@ -127,14 +127,15 @@ This improves debugging, monitoring, and system observability.
 
 ## 📄 Report Answers
 ### Part 1: Service Architecture & Setup
-#### Project & Application Configuration
+#### 1.Project & Application Configuration
 The per-request lifecycle is the default lifecycle used by all JAX-RS resource classes; this implies that a new object will be instantiated for every single incoming HTTP request. In effect, this guarantees that requests will be handled in an independent manner and that there won't be any issues regarding shared state within the resource class since they will be thread-safe objects.
 
 But the situation is quite different when considering in-memory application storage that relies on data structures like HashMaps or ArrayLists, as they would be shared among several requests at the same time. The main problem lies in ensuring that requests do not interfere with one another while working with shared data, as this might result in race conditions or even data loss.
 
 In conclusion, although the per-request lifecycle makes sure that individual HTTP requests are handled in a thread-safe way, it is still necessary to synchronize any shared data structure in order to achieve consistency and stability within the application.
 
-#### The ”Discovery” Endpoint
+
+####  2. The ”Discovery” Endpoint
 One of the main criteria used to define advanced RESTful API design would be Hypermedia (HATEOAS). It means that the API is able to provide the information about the available resources and actions that should be performed using these resources in the form of embedded links into the response messages sent by the server.
 
 Thus, there is no need to use predefined endpoints and rely on static external documentation when using such APIs. Instead, a client application can navigate to the available resources using hyperlinks provided in API responses.
@@ -145,7 +146,8 @@ If documentation and URLs for the endpoints were hardcoded into the program in a
 
 
 ### Part 2: Room Management
-#### Room Resource Implementation
+
+#### 1. Room Resource Implementation
 Returning only the room IDs will have smaller response sizes, thus lowering bandwidth usage, especially when many rooms are being processed. The client can request more data only if required, making it more efficient to handle many records. But returning the room IDs will increase client computation because the client should make more requests to get all data about each room.
 
 But when all room objects are returned by the server, then the client has access to all information, making further requests unnecessary. Hence, developing an application on the server becomes easier and quicker. But the size of the response becomes bigger, leading to higher network usage.
@@ -153,7 +155,7 @@ But when all room objects are returned by the server, then the client has access
 So, returning room IDs is better for performance and scalability issues, while returning objects will make development easier.
 
 
-#### Room Deletion & Safety Logic
+#### 2. Room Deletion & Safety Logic
 DELETE requests in this scenario are idempotent, as repeating the same request leads to the same end state for the system.
 
 If a user issues a DELETE request for a certain room for the very first time, then the room would be deleted from the DataStore. Upon issuing the same DELETE request, again for the same room, the room won’t even exist in the database, leading the API to respond with a 404 Not Found error.
@@ -164,7 +166,8 @@ In other words, multiple requests made using the exact same command do not yield
 
 
 ### Part 3: Sensor Operations & Linking
-#### Sensor Resource & Integrity
+
+#### 1. Sensor Resource & Integrity
 @Consumes (MediaType.APPLICATION_JSON) annotation is used to denote that the endpoint will only receive requests that have a JSON body. In case the incoming data uses a different media type, such as plain/text or XML, then there will be no available message body reader to consume the message in the JAX-RS implementation.
 
 In this way, JAX-RS framework automatically declines the incoming request, sending back an HTTP 415 Unsupported Media Type response status. The message denotes that the server understands the request but it cannot handle the media content type that was used in the request.
@@ -172,7 +175,7 @@ In this way, JAX-RS framework automatically declines the incoming request, sendi
 This approach helps ensure that the incoming data is in the correct media format before processing it in the system.
 
 
-#### Filtered Retrieval & Search
+#### 2. Filtered Retrieval & Search
 Usage of @QueryParam for filtering purposes would be more appropriate since it adheres to the principles of RESTful services with respect to optional queries and search functionality. The main purpose of query parameters is to filter the content within a certain resource collection, e.g. getting sensors of a particular type.
 
 The use of a path parameter /sensors/type/CO2 implies a completely different approach. This would create a resource hierarchy which could not represent filtering of the existing collection but a different resource instead.
@@ -184,7 +187,7 @@ As a result, @QueryParam can be regarded as a more suitable option for filtering
 
 ### Part 4: Deep Nesting with Sub- Resources
 
-#### The Sub-Resource Locator Pattern
+#### 1. The Sub-Resource Locator Pattern
 One way to enhance the architecture and design of the API is by employing the Sub-Resource Locator pattern. This means that different resources in the application would be managed using dedicated classes rather than trying to manage all endpoints inside one giant controller.
 
 In turn, it would improve readability, maintenance and development of the application. For instance, managing all endpoints like sensors/{id}/readings and sensors/{id}/readings/{rid} would result in a bulky controller that would be hard to maintain.
@@ -196,18 +199,18 @@ Therefore, this approach would make the API more scalable, maintainable and orga
 
 ### Part 5: Advanced Error Handling, Exception Mapping & Logging
 
-#### Dependency Validation
+#### 2. Dependency Validation
 
 However, HTTP 422 Unprocessable Entity should be used instead of 404 Not Found because the problem lies in the contents inside the request rather than in the request’s structure, even though it is correct. The JSON content in the request is valid, but it includes an invalid roomId value.
 
 It is important to mention that HTTP 404 Not Found is used in case there is no such resource available, but HTTP 422 Unprocessable Entity suggests that the request can be processed, but something went wrong in its semantics.
 
-#### The Global Safety Net (500)
+#### 4. The Global Safety Net (500)
 Showing the internal stack traces from Java can be dangerous since this will expose sensitive information related to the actual classes used for implementation, their packaging, and internal workings of the application.
 
 Using this kind of information, an attacker can detect some vulnerabilities within the system, exploit them, and gain unauthorized access to the internal workings of the application. Hence, we need to mask our error responses to protect our systems.
 
-#### API Request & Response Logging Filters
+#### 5. API Request & Response Logging Filters
 It is a good idea to use JAX-RS filters for logging due to the fact that such cross-cutting concerns allow you to avoid duplication of code since there is some functionality that is needed to apply to all requests and responses. It means that you do not need to insert Logger.info() into all your methods.
 
 In this case, it becomes possible to add an ability to log all requests automatically. It helps avoid duplication of code, make the application more consistent (since all the requests will be logged using a common algorithm), and facilitate scalability of the system (for example, it is easy to make changes related to logging).
